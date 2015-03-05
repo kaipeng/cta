@@ -74,9 +74,8 @@ if __name__ == '__main__':
         response = urllib2.urlopen(data_url)
         chunk_download(response, zip_path)
 
-        print "Download complete. Unzipping from: ", zip_path
-        unzip(zip_path)
     else:
         print "Local file up to date."
 
-
+    print "Download complete. Unzipping from: ", zip_path
+    unzip(zip_path)
