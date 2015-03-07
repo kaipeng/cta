@@ -2,6 +2,9 @@ import tornado.ioloop
 import tornado.web
 from tornado.options import define, options, parse_command_line
 
+from fetch_cta_data import fetch_cta_data
+
+
 define("port", default=8888, help="run on the given port", type=int)
 
 
@@ -18,6 +21,8 @@ application = tornado.web.Application([
 ])
 
 if __name__ == '__main__':
+    fetch_cta_data()
+
     parse_command_line()
     application.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
