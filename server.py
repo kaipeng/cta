@@ -1,11 +1,14 @@
 import tornado.ioloop
 import tornado.web
 from tornado.options import define, options, parse_command_line
+
 from data_loading import load_stops
 
 from fetch_cta_data import fetch_cta_data
 from get_nearest_stop import get_nearest_stop
 
+
+NUMBER = r'-?[0-9]+\.*[0-9]*'
 
 define("port", default=8888, help="run on the given port", type=int)
 
@@ -21,16 +24,16 @@ class DefaultHandler(tornado.web.RequestHandler):
 class NearestStopHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def get(self, my_lat, my_lon):
-        self.set_header("Content-Type", "text/plain")
+        self.set_header("Content-Type", "text/json")
         stops = load_stops()
         stop = get_nearest_stop(stops, [float(my_lat), float(my_lon)])
-        self.write(stop.to_string())
+        self.write(stop.to_json())
         self.finish()
 
 
 application = tornado.web.Application([
     (r'/', DefaultHandler),
-    (r'/stops/(-?[0-9]+\.*[0-9]*)/(-?[0-9]+\.*[0-9]*)', NearestStopHandler),
+    ((r'/stops/(%s)/(%s)' % (NUMBER, NUMBER)), NearestStopHandler),
 ])
 
 if __name__ == '__main__':
