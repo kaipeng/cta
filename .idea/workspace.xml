@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="194ec5c2-6b70-405c-8bd7-9267e5ee0154" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lookup.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fetch_cta_data.py" afterPath="$PROJECT_DIR$/fetch_cta_data.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lookup.ipynb" afterPath="$PROJECT_DIR$/lookup.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.py" afterPath="$PROJECT_DIR$/server.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -33,8 +33,8 @@
       <file leaf-file-name="fetch_cta_data.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/fetch_cta_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-16.24" vertical-offset="809" max-vertical-offset="1305">
-              <caret line="81" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
+            <state vertical-scroll-proportion="-15.24" vertical-offset="1014" max-vertical-offset="1485">
+              <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
               </folding>
@@ -45,8 +45,8 @@
       <file leaf-file-name="stops.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/google_transit/stops.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="151.0" vertical-offset="13935" max-vertical-offset="175545">
-              <caret line="627" column="3" selection-start-line="627" selection-start-column="0" selection-end-line="627" selection-end-column="3" />
+            <state vertical-scroll-proportion="151.0" vertical-offset="13965" max-vertical-offset="175560">
+              <caret line="629" column="3" selection-start-line="627" selection-start-column="0" selection-end-line="627" selection-end-column="3" />
               <folding />
             </state>
           </provider>
@@ -55,10 +55,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="calendar.txt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="calendar.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/google_transit/calendar.txt">
           <provider editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1935">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2550">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
@@ -84,8 +84,8 @@
       <file leaf-file-name="trips.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/google_transit/trips.txt">
           <provider editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-100.73077" vertical-offset="279792" max-vertical-offset="782385">
-              <caret line="19002" column="60" selection-start-line="19002" selection-start-column="55" selection-end-line="19002" selection-end-column="60" />
+            <state vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="848940">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -101,12 +101,33 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.2" vertical-offset="0" max-vertical-offset="120">
-              <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.5608108" vertical-offset="456" max-vertical-offset="900">
+              <caret line="47" column="19" selection-start-line="47" selection-start-column="19" selection-end-line="47" selection-end-column="19" />
+              <folding>
+                <element signature="e#0#21#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="data_loading.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data_loading.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="435">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="lookup.ipynb" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lookup.ipynb">
+          <provider selected="true" editor-type-id="ipnb-editor">
+            <state>
+              <selected id="0" top="0" />
             </state>
           </provider>
         </entry>
@@ -133,10 +154,11 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/readme.md" />
-        <option value="$PROJECT_DIR$/server.py" />
         <option value="$PROJECT_DIR$/requirements.txt" />
         <option value="$PROJECT_DIR$/fetch_cta_data.py" />
         <option value="$PROJECT_DIR$/google_transit/trips.txt" />
+        <option value="$PROJECT_DIR$/lookup.ipynb" />
+        <option value="$PROJECT_DIR$/server.py" />
       </list>
     </option>
   </component>
@@ -203,6 +225,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cta" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cta" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cta_L_stops" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
       <pane id="Scope" />
@@ -210,6 +246,9 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="options.lastSelected" value="preferences.keymap" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="options.splitter.details.proportions" value="0.2" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -421,10 +460,10 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="873" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3290653" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3290653" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3290653" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -466,16 +505,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/fetch_cta_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-16.24" vertical-offset="809" max-vertical-offset="1305">
-          <caret line="81" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/requirements.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.06048387" vertical-offset="0" max-vertical-offset="496">
@@ -496,14 +525,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="525">
           <caret line="0" column="112" selection-start-line="0" selection-start-column="112" selection-end-line="0" selection-end-column="112" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.2" vertical-offset="0" max-vertical-offset="120">
-          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -534,8 +555,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/google_transit/trips.txt">
       <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-100.73077" vertical-offset="279792" max-vertical-offset="782385">
-          <caret line="19002" column="60" selection-start-line="19002" selection-start-column="55" selection-end-line="19002" selection-end-column="60" />
+        <state vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="848940">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -556,8 +577,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/google_transit/stops.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="151.0" vertical-offset="13935" max-vertical-offset="175545">
-          <caret line="627" column="3" selection-start-line="627" selection-start-column="0" selection-end-line="627" selection-end-column="3" />
+        <state vertical-scroll-proportion="151.0" vertical-offset="13965" max-vertical-offset="175560">
+          <caret line="629" column="3" selection-start-line="627" selection-start-column="0" selection-end-line="627" selection-end-column="3" />
           <folding />
         </state>
       </provider>
@@ -574,6 +595,41 @@
       </provider>
       <provider selected="true" editor-type-id="com.intellij.database.editor.CsvTableFileEditorProvider">
         <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fetch_cta_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-15.24" vertical-offset="1014" max-vertical-offset="1485">
+          <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lookup.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" top="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_loading.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="496">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5608108" vertical-offset="456" max-vertical-offset="900">
+          <caret line="47" column="19" selection-start-line="47" selection-start-column="19" selection-end-line="47" selection-end-column="19" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
       </provider>
     </entry>
   </component>
