@@ -81,11 +81,14 @@ def fetch_cta_data():
         print "Downloading zipped data from: ", data_url
         response = urllib2.urlopen(data_url)
         chunk_download(response, zip_path)
-        print "Download complete. Unzipping from: ", zip_path
+        print "Download complete."
+    else:
+        print "Local zip file up to date."
+
+    if not os.path.isdir(zip_path.split('.')[0]) and os.path.exists(zip_path):
+        print "Unzipping from: ", zip_path
         unzip(zip_path)
         print "Unzip complete"
-    else:
-        print "Local file up to date."
 
     return {'local_last_update_dt': local_last_update_dt, 'cta_last_update_dt': cta_last_update_dt}
 
