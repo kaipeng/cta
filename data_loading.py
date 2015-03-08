@@ -1,9 +1,37 @@
+import datetime
+
 import pandas as pd
 import datetime
 
 
+DATETIME_COLUMNS = ['arrival_time', 'departure_time']
+
+
 def load_data(data_to_load):
-    return pd.DataFrame.from_csv('google_transit/' + data_to_load + '.txt')
+    data = pd.DataFrame.from_csv('google_transit/' + data_to_load + '.txt')
+    return convert_time_strings(data)
+
+
+def convert_time_strings(raw_data):
+    for datetime_column in DATETIME_COLUMNS:
+        if datetime_column in raw_data.columns:
+            datetime_data = raw_data[datetime_column]
+            raw_data[datetime_column + '_datetime'] = [convert_time_string(time_string) for time_string in
+                                                       datetime_data]
+    return raw_data
+
+
+def convert_time_string(datetime_string):
+    time_elements = datetime_string.split(':')
+    hour = int(time_elements[0])
+    current_datetime = datetime.datetime.today()
+    current_hour = current_datetime.hour
+    datetime_today = datetime.datetime(current_datetime.year, current_datetime.month, current_datetime.day,
+                                       hour % 24, int(time_elements[1]), int(time_elements[2]))
+    if hour < current_hour or hour > 23:
+        return datetime_today + datetime.timedelta(days=1)
+    else:
+        return datetime_today
 
 
 def load_stops():
