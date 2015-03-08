@@ -51,26 +51,29 @@ class DataManager():
         print "Finished Parsing"
 
     def load_stop_times_in_window(self, start_datetime, window_in_hours):
-        calendar_today = load_calendar_date(self.calendar, start_datetime, days_delta=0)
-        trips_today = load_trips_date(self.trips, calendar_today)
-        stop_times_today = load_stop_times_date(self.stop_times, trips_today)
         start_time_string = start_datetime.strftime('%H:%M:%S')
         end_datetime = start_datetime + datetime.timedelta(hours=window_in_hours)
         end_time_string = end_datetime.strftime('%H:%M:%S')
+        print 'Loading stop times from ', start_time_string, ' thru ', end_time_string
+
+        calendar_today = load_calendar_date(self.calendar, start_datetime, days_delta=0)
+        trips_today = load_trips_date(self.trips, calendar_today)
+        stop_times_today = load_stop_times_date(self.stop_times, trips_today)
 
         # case where window crosses into next day (maybe new schedule)
         if start_datetime.date() < end_datetime.date():
+            print 'Window crossing over midnight. Creating 2 windows for 2 days.'
             stop_times_window = stop_times_today[(stop_times_today.arrival_time > start_time_string)]
 
-            calendar_tomorrow = load_calendar_date(self.calendar, start_datetime, days_delta=0)
+            calendar_tomorrow = load_calendar_date(self.calendar, start_datetime, days_delta=1)
             trips_tomorrow = load_trips_date(self.trips, calendar_tomorrow)
             stop_times_tomorrow = load_stop_times_date(self.stop_times, trips_tomorrow)
             stop_times_window_tomorrow = stop_times_tomorrow[(stop_times_tomorrow.arrival_time < end_time_string)]
 
+            print 'Setting tomorrow arrival_time to arrival_time_24. Concat lengths: ', \
+                len(stop_times_window), len(stop_times_window_tomorrow)
             stop_times_window_tomorrow['arrival_time'] = stop_times_window_tomorrow['arrival_time_24']
-            stop_times_window_tomorrow['departure_time'] = stop_times_window_tomorrow['departure_time_24']
-
-            stop_times_window = pd.concat(stop_times_window, stop_times_window_tomorrow)
+            stop_times_window = pd.concat([stop_times_window, stop_times_window_tomorrow])
 
         else:
             stop_times_window = stop_times_today[(stop_times_today.arrival_time > start_time_string)
@@ -252,7 +255,7 @@ if __name__ == '__main__':
     data_manager_init_thread.start()
 
     schedule_job(60 * 60 * 1, update_data_manager_job)
-    schedule_job(60 * 60 * 1, update_stop_times_window_job)
+    schedule_job(60 * 10, update_stop_times_window_job)
 
     application.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
