@@ -87,6 +87,8 @@ def fetch_cta_data():
     else:
         print "Local file up to date."
 
+    return {'local_last_update_dt': local_last_update_dt, 'cta_last_update_dt': cta_last_update_dt}
+
 
 
 if __name__ == '__main__':

@@ -12,6 +12,7 @@ from get_nearest_stop import get_nearest_stop
 
 import datetime
 import time
+import pprint
 import pandas as pd
 
 NUMBER = r'-?[0-9]+\.*[0-9]*'
@@ -21,7 +22,7 @@ define("port", default=8888, help="run on the given port", type=int)
 
 class DataManager():
     def __init__(self):
-        fetch_cta_data()
+        self.data_last_downloaded = fetch_cta_data()
         print "Parsing Data into memory"
         self.stops = load_stops()
         self.calendar = load_calendar()
@@ -31,6 +32,8 @@ class DataManager():
         self.stop_times_window = None
         self.stop_times_window_end_datetime = None
         self.stop_times_window_start_datetime = None
+
+
         self.arrival_columns = ['stop_id', 'trip_id', 'route_id',
                                 'direction', 'direction_id', 'service_id',
                                 'arrival_time', 'dist', 'stop_lat', 'stop_lon',
@@ -111,8 +114,24 @@ class DataManager():
 class DefaultHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def get(self):
-        self.set_header("Content-Type", "text/plain")
-        self.write("Success!")
+        api_endpoints = [
+            "arrivals?lat=41.8991186&lon=-87.629056",
+            "arrivals?lat=41.8991186&lon=-87.629056&stops=10&hours=2&start=2015-04-08T14:30:00",
+            "stops?lat=41.8991186&lon=-87.629056&stops=10",
+        ]
+        self.write("<!DOCTYPE html> <html><body><p>" +
+                   "Data Status: <br>" +
+                   "Data Last Updated by CTA: " + str(data_manager.data_last_downloaded['cta_last_update_dt']) +
+                   "<br>" +
+                   "Data Last Fetched by Server: " + str(data_manager.data_last_downloaded['local_last_update_dt']) +
+                   "<br>" +
+                   "Memory-Cached Stop Times Start: " + str(data_manager.stop_times_window_end_datetime) +
+                   "<br>" +
+                   "Memory-Cached Stop Times End: " + str(data_manager.stop_times_window_end_datetime) +
+                   "<br><br><br>" +
+                   "API Endpoints: <br>" +
+                   ''.join(['<a href=' + url + '>' + url + '</a><br>' for url in api_endpoints]) +
+                   "</p></body></html>")
         self.finish()
 
 
@@ -140,7 +159,6 @@ class NearbyStopsHandler(tornado.web.RequestHandler):
 class NearbyArrivalsHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def get(self):
-        print self.get_argument('lat')
         lat = float(self.get_argument('lat'))
         lon = float(self.get_argument('lon'))
         num_stops = int(self.get_argument('stops', default=10))
@@ -177,7 +195,7 @@ def update_data_manager():
     data_manager = new_data_manager
 
 def update_stop_times_window_job(delay_in_seconds):
-    print "updating stop times window"
+    print "Updating Stop Times Window"
     global data_manager
     start_dt = datetime.datetime.now()
     data_manager.stop_times_window = data_manager.load_stop_times_in_window(start_dt, 3)
@@ -200,9 +218,8 @@ data_manager = None
 if __name__ == '__main__':
     parse_command_line()
     data_manager = DataManager()
-
-    schedule_data_manager_job(60 * 60 * 6, update_data_manager_job)
     update_stop_times_window_job(60 * 60 * 1)
+    schedule_data_manager_job(60 * 60 * 6, update_data_manager_job)
 
     application.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
