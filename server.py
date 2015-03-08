@@ -13,6 +13,7 @@ from get_nearest_stop import get_nearest_stop
 import datetime
 import time
 import pprint
+import threading
 import pandas as pd
 
 NUMBER = r'-?[0-9]+\.*[0-9]*'
@@ -22,24 +23,33 @@ define("port", default=8888, help="run on the given port", type=int)
 
 class DataManager():
     def __init__(self):
-        self.data_last_downloaded = fetch_cta_data()
-        print "Parsing Data into memory"
-        self.stops = load_stops()
-        self.calendar = load_calendar()
-        self.stop_times = load_stop_times()
-        self.trips = load_trips()
+        self.data_last_downloaded = {'local_last_update_dt': None,
+                                     'cta_last_update_dt': None}
+        self.stops = None
+        self.trips = None
+        self.calendar = None
+        self.stop_times = None
         self.trips_window = None
         self.stop_times_window = None
         self.stop_times_window_end_datetime = None
         self.stop_times_window_start_datetime = None
-
-
         self.arrival_columns = ['stop_id', 'trip_id', 'route_id',
                                 'direction', 'direction_id', 'service_id',
                                 'arrival_time', 'dist', 'stop_lat', 'stop_lon',
                                 'stop_sequence', 'stop_headsign', 'stop_name', 'stop_desc',
                                 'wheelchair_accessible']
                                 # 'shape_dist_travelled', 'schd_trip_id', 'block_id']
+        print "Initializing Data Manager"
+        self.parse_data_into_memory()
+
+    def parse_data_into_memory(self):
+        print "Checking for CTA data"
+        self.data_last_downloaded = fetch_cta_data()
+        print "Parsing Data into memory"
+        self.stops = load_stops()
+        self.calendar = load_calendar()
+        self.stop_times = load_stop_times()
+        self.trips = load_trips()
         print "Finished Parsing"
 
     def load_stop_times_in_window(self, start_datetime, window_in_hours):
@@ -114,6 +124,11 @@ class DataManager():
 class DefaultHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def get(self):
+        global data_manager_init_thread
+        if data_manager_init_thread.isAlive():
+            self.write("Server Still Initializing")
+            self.finish()
+            return
         api_endpoints = [
             "arrivals?lat=41.8991186&lon=-87.629056",
             "arrivals?lat=41.8991186&lon=-87.629056&stops=10&hours=2&start=2015-04-08T14:30:00",
@@ -179,14 +194,14 @@ class NearbyArrivalsHandler(tornado.web.RequestHandler):
         self.write(arrivals.to_json(orient='records'))
         self.finish()
 
-def schedule_data_manager_job(delay_in_seconds, job_method):
+def schedule_job(delay_in_seconds, job_method):
     Timer(delay_in_seconds, job_method, [delay_in_seconds]).start()
 
 
 def update_data_manager_job(delay_in_seconds):
     print "updating data manager"
     update_data_manager()
-    schedule_data_manager_job(delay_in_seconds, update_data_manager_job)
+    schedule_job(delay_in_seconds, update_data_manager_job)
 
 
 def update_data_manager():
@@ -194,15 +209,27 @@ def update_data_manager():
     global data_manager
     data_manager = new_data_manager
 
+
 def update_stop_times_window_job(delay_in_seconds):
+    update_stop_times_window()
+    schedule_job(delay_in_seconds, update_stop_times_window_job)
+
+
+def update_stop_times_window():
     print "Updating Stop Times Window"
     global data_manager
     start_dt = datetime.datetime.now()
     data_manager.stop_times_window = data_manager.load_stop_times_in_window(start_dt, 3)
     data_manager.stop_times_window_start_datetime = start_dt
     data_manager.stop_times_window_end_datetime = start_dt + datetime.timedelta(hours=3)
-    print start_dt, data_manager.stop_times_window_end_datetime
-    schedule_data_manager_job(delay_in_seconds, update_stop_times_window_job)
+    print "Stop Times Window Updated: ", start_dt, data_manager.stop_times_window_end_datetime
+
+
+def init_data_manager_daemon():
+    global data_manager
+    data_manager = DataManager()
+    update_stop_times_window()
+
 
 settings = {'debug': True}
 application = tornado.web.Application([
@@ -214,12 +241,16 @@ application = tornado.web.Application([
 ], **settings)
 
 data_manager = None
+data_manager_init_thread = None
 
 if __name__ == '__main__':
     parse_command_line()
-    data_manager = DataManager()
-    update_stop_times_window_job(60 * 60 * 1)
-    schedule_data_manager_job(60 * 60 * 6, update_data_manager_job)
+    data_manager_init_thread = threading.Thread(target=init_data_manager_daemon)
+    data_manager_init_thread.setDaemon(True)
+    data_manager_init_thread.start()
+
+    schedule_job(60 * 60 * 6, update_data_manager_job)
+    schedule_job(60 * 60 * 1, update_stop_times_window_job)
 
     application.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
