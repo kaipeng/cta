@@ -31,6 +31,12 @@ class DataManager():
         self.stop_times_window = None
         self.stop_times_window_end_datetime = None
         self.stop_times_window_start_datetime = None
+        self.arrival_columns = ['stop_id', 'trip_id', 'route_id',
+                                'direction', 'direction_id', 'service_id',
+                                'arrival_time', 'dist', 'stop_lat', 'stop_lon',
+                                'stop_sequence', 'stop_headsign', 'stop_name', 'stop_desc',
+                                'wheelchair_accessible']
+                                # 'shape_dist_travelled', 'schd_trip_id', 'block_id']
         print "Finished Parsing"
 
     def load_stop_times_in_window(self, start_datetime, window_in_hours):
@@ -98,7 +104,8 @@ class DataManager():
         next_arrivals = stop_times.join(trips.reset_index().set_index('trip_id'))
         next_arrivals_stops = next_arrivals.reset_index().set_index('stop_id').join(stops).reset_index()
         next_arrivals_stops = next_arrivals_stops.sort(columns=['dist', 'arrival_time'])
-        return next_arrivals_stops
+        # cut down useless columns
+        return next_arrivals_stops[self.arrival_columns]
 
 
 class DefaultHandler(tornado.web.RequestHandler):
