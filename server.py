@@ -15,10 +15,12 @@ define("port", default=8888, help="run on the given port", type=int)
 class DataManager():
     def __init__(self):
         fetch_cta_data()
+        print "Parsing Data into memory"
         self.stops = load_stops()
         self.calendar = load_calendar()
         self.stop_times = load_stop_times()
         self.trips = load_trips()
+        print "Finished Parsing"
 
 class DefaultHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
@@ -47,9 +49,7 @@ data_manager = None
 
 if __name__ == '__main__':
     parse_command_line()
-    print "Loading Data"
     data_manager = DataManager()
-    print "Finished Loading"
 
     application.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
