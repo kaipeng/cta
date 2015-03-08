@@ -81,12 +81,12 @@ def fetch_cta_data():
         print "Downloading zipped data from: ", data_url
         response = urllib2.urlopen(data_url)
         chunk_download(response, zip_path)
-
+        print "Download complete. Unzipping from: ", zip_path
+        unzip(zip_path)
+        print "Unzip complete"
     else:
         print "Local file up to date."
 
-    print "Download complete. Unzipping from: ", zip_path
-    unzip(zip_path)
 
 
 if __name__ == '__main__':

@@ -9,7 +9,8 @@ DATETIME_COLUMNS = ['arrival_time', 'departure_time']
 
 def load_data(data_to_load):
     data = pd.DataFrame.from_csv('google_transit/' + data_to_load + '.txt')
-    return convert_time_strings(data)
+    #return convert_time_strings(data)
+    return data
 
 
 def convert_time_strings(raw_data):
@@ -39,38 +40,30 @@ def load_stops():
     return stops_all.dropna(how='all', subset=['stop_code', 'parent_station'])
 
 def load_stop_times():
-    return load_data('stop_times')
+    stop_times = load_data('stop_times')
+    for datetime_column in DATETIME_COLUMNS:
+        stop_times[datetime_column + '_24'] = [(str(int(time[0:2])+24) + time[2:])
+                                               for time in stop_times[datetime_column]]
+    return stop_times
 
-def load_stop_times_today(stop_times, trips_today):
-    return stop_times[stop_times.index.isin(trips_today.trip_id)]
-
-def load_stop_times_tomorrow(stop_times, trips_tomorrow):
-    return stop_times[stop_times.index.isin(trips_tomorrow.trip_id)]
+def load_stop_times_date(stop_times, trips):
+    return stop_times[stop_times.index.isin(trips.trip_id)]
 
 def load_trips():
     return load_data('trips')
 
-def load_trips_today(trips, calendar_today):
-    return trips[trips.service_id.isin(calendar_today.index.values)]
-
-def load_trips_tomorrow(trips, calendar_tomorrow):
-    return trips[trips.service_id.isin(calendar_tomorrow.index.values)]
+def load_trips_date(trips, calendar):
+    return trips[trips.service_id.isin(calendar.index.values)]
 
 def load_calendar():
     return load_data('calendar')
 
-def load_calendar_today(calendar, cur_datetime):
-    date_today = int(cur_datetime.strftime('%Y%m%d'))
-    weekday_today = cur_datetime.strftime('%A').lower()
-    calendar_today = calendar[(calendar.start_date < date_today)
-                              & (calendar.end_date > date_today)
-                              & (calendar[weekday_today] == 1)]
-    return calendar_today
+def load_calendar_date(calendar, start_date, days_delta=0):
+    load_date = start_date + datetime.timedelta(days=days_delta)
+    date_dt = int(load_date.strftime('%Y%m%d'))
+    weekday_dt = load_date.strftime('%A').lower()
+    calendar_dt = calendar[(calendar.start_date < date_dt)
+                           & (calendar.end_date > date_dt)
+                           & (calendar[weekday_dt] == 1)]
+    return calendar_dt
 
-def load_calendar_tomorrow(calendar, cur_datetime):
-    date_tomorrow = int((cur_datetime + datetime.timedelta(days=1)).strftime('%Y%m%d'))
-    weekday_tomorrow = (cur_datetime + datetime.timedelta(days=1)).strftime('%A').lower()
-    calendar_tomorrow = calendar[(calendar.start_date < date_tomorrow)
-                                 & (calendar.end_date > date_tomorrow)
-                                 & (calendar[weekday_tomorrow] == 1)]
-    return calendar_tomorrow
