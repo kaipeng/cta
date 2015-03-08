@@ -11,8 +11,6 @@ from fetch_cta_data import fetch_cta_data, check_update_needed
 from get_nearest_stop import get_nearest_stop
 
 import datetime
-import time
-import pprint
 import threading
 import pandas as pd
 
@@ -53,7 +51,6 @@ class DataManager():
         print "Finished Parsing"
 
     def load_stop_times_in_window(self, start_datetime, window_in_hours):
-        #start = time.time()
         calendar_today = load_calendar_date(self.calendar, start_datetime, days_delta=0)
         trips_today = load_trips_date(self.trips, calendar_today)
         stop_times_today = load_stop_times_date(self.stop_times, trips_today)
@@ -79,8 +76,6 @@ class DataManager():
             stop_times_window = stop_times_today[(stop_times_today.arrival_time > start_time_string)
                                                  & (stop_times_today.arrival_time < end_time_string)]
 
-        #end = time.time()
-        #print end - start
         return stop_times_window
 
     def get_nearest_stops(self, lat, lon, num=10):
@@ -140,7 +135,7 @@ class DefaultHandler(tornado.web.RequestHandler):
                    "<br>" +
                    "Data Last Fetched by Server: " + str(data_manager.data_last_downloaded['local_last_update_dt']) +
                    "<br>" +
-                   "Memory-Cached Stop Times Start: " + str(data_manager.stop_times_window_end_datetime) +
+                   "Memory-Cached Stop Times Start: " + str(data_manager.stop_times_window_start_datetime) +
                    "<br>" +
                    "Memory-Cached Stop Times End: " + str(data_manager.stop_times_window_end_datetime) +
                    "<br><br><br>" +
