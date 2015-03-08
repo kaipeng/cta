@@ -1,9 +1,10 @@
+from threading import Timer
+
 import tornado.ioloop
 import tornado.web
 from tornado.options import define, options, parse_command_line
 
 from data_loading import load_stops, load_calendar, load_stop_times, load_trips
-
 from fetch_cta_data import fetch_cta_data
 from get_nearest_stop import get_nearest_stop
 
@@ -11,6 +12,7 @@ from get_nearest_stop import get_nearest_stop
 NUMBER = r'-?[0-9]+\.*[0-9]*'
 
 define("port", default=8888, help="run on the given port", type=int)
+
 
 class DataManager():
     def __init__(self):
@@ -21,6 +23,7 @@ class DataManager():
         self.stop_times = load_stop_times()
         self.trips = load_trips()
         print "Finished Parsing"
+
 
 class DefaultHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
@@ -39,6 +42,23 @@ class NearestStopHandler(tornado.web.RequestHandler):
         self.write(stop.to_json(orient='records'))
         self.finish()
 
+
+def schedule_data_manager_job(delay_in_seconds):
+    Timer(delay_in_seconds, update_data_manager_job, [delay_in_seconds]).start()
+
+
+def update_data_manager_job(delay_in_seconds):
+    print "updating data manager"
+    update_data_manager()
+    schedule_data_manager_job(delay_in_seconds)
+
+
+def update_data_manager():
+    new_data_manager = DataManager()
+    global data_manager
+    data_manager = new_data_manager
+
+
 settings = {'debug': True}
 application = tornado.web.Application([
     (r'/', DefaultHandler),
@@ -50,6 +70,8 @@ data_manager = None
 if __name__ == '__main__':
     parse_command_line()
     data_manager = DataManager()
+
+    schedule_data_manager_job(60 * 60 * 6)
 
     application.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
