@@ -7,7 +7,7 @@ from tornado.options import define, options, parse_command_line
 from data_loading import load_stops, load_calendar, load_stop_times, load_trips
 from data_loading import load_trips_date, load_stop_times_date, load_calendar_date
 
-from fetch_cta_data import fetch_cta_data
+from fetch_cta_data import fetch_cta_data, check_update_needed
 from get_nearest_stop import get_nearest_stop
 
 import datetime
@@ -126,7 +126,7 @@ class DefaultHandler(tornado.web.RequestHandler):
     def get(self):
         global data_manager_init_thread
         if data_manager_init_thread.isAlive():
-            self.write("Server Still Initializing")
+            self.write("Server Initializing")
             self.finish()
             return
         api_endpoints = [
@@ -199,15 +199,18 @@ def schedule_job(delay_in_seconds, job_method):
 
 
 def update_data_manager_job(delay_in_seconds):
-    print "updating data manager"
-    update_data_manager()
+    # Modified to only update / reload into memory if a new version is available
+    print "Checking for data updates"
+    need_update, cta_last_update_dt, local_last_update_dt = check_update_needed()
+
+    if need_update:
+        print "Update Needed: ", need_update, cta_last_update_dt, local_last_update_dt
+        global data_manager_init_thread
+        data_manager_init_thread = threading.Thread(target=init_data_manager_daemon)
+        data_manager_init_thread.setDaemon(True)
+        data_manager_init_thread.start()
+
     schedule_job(delay_in_seconds, update_data_manager_job)
-
-
-def update_data_manager():
-    new_data_manager = DataManager()
-    global data_manager
-    data_manager = new_data_manager
 
 
 def update_stop_times_window_job(delay_in_seconds):
@@ -216,20 +219,24 @@ def update_stop_times_window_job(delay_in_seconds):
 
 
 def update_stop_times_window():
-    print "Updating Stop Times Window"
-    global data_manager
-    start_dt = datetime.datetime.now()
-    data_manager.stop_times_window = data_manager.load_stop_times_in_window(start_dt, 3)
-    data_manager.stop_times_window_start_datetime = start_dt
-    data_manager.stop_times_window_end_datetime = start_dt + datetime.timedelta(hours=3)
-    print "Stop Times Window Updated: ", start_dt, data_manager.stop_times_window_end_datetime
-
+    try:
+        print "Updating Stop Times Window"
+        global data_manager
+        start_dt = datetime.datetime.now()
+        data_manager.stop_times_window = data_manager.load_stop_times_in_window(start_dt, 3)
+        data_manager.stop_times_window_start_datetime = start_dt
+        data_manager.stop_times_window_end_datetime = start_dt + datetime.timedelta(hours=3)
+        print "Stop Times Window Updated: ", start_dt, data_manager.stop_times_window_end_datetime
+    except Exception as e:
+        print e
 
 def init_data_manager_daemon():
-    global data_manager
-    data_manager = DataManager()
-    update_stop_times_window()
-
+    try:
+        global data_manager
+        data_manager = DataManager()
+        update_stop_times_window()
+    except Exception as e:
+        print e
 
 settings = {'debug': True}
 application = tornado.web.Application([
@@ -249,7 +256,7 @@ if __name__ == '__main__':
     data_manager_init_thread.setDaemon(True)
     data_manager_init_thread.start()
 
-    schedule_job(60 * 60 * 6, update_data_manager_job)
+    schedule_job(60 * 60 * 1, update_data_manager_job)
     schedule_job(60 * 60 * 1, update_stop_times_window_job)
 
     application.listen(options.port)

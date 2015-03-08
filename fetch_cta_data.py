@@ -5,6 +5,9 @@ import sys
 import os
 import datetime
 
+data_root_url = "http://www.transitchicago.com/downloads/sch_data/"
+zip_path = 'google_transit.zip'
+data_url = data_root_url + zip_path
 
 def chunk_report(bytes_so_far, chunk_size, total_size):
     percent = float(bytes_so_far) / total_size
@@ -55,13 +58,7 @@ def unzip(path):
     zipfile.extractall(path.split('.')[0])
 
 
-def fetch_cta_data():
-    # TODO: check website for last-update info. if new version is available, then download
-
-    data_root_url = "http://www.transitchicago.com/downloads/sch_data/"
-    zip_path = 'google_transit.zip'
-    data_url = data_root_url + zip_path
-
+def check_update_needed():
     need_update = True
     try:
         response = urllib2.urlopen(data_url)
@@ -71,11 +68,16 @@ def fetch_cta_data():
 
         statbuf = os.stat(zip_path)
         local_last_update_dt = datetime.datetime.fromtimestamp(int(statbuf.st_mtime))
-        print "Local last modified: ", local_last_update_dt
+        print "Local zip last modified: ", local_last_update_dt
 
         need_update = cta_last_update_dt > local_last_update_dt
     except Exception as e:
         print e
+    return need_update, cta_last_update_dt, local_last_update_dt
+
+
+def fetch_cta_data():
+    need_update, cta_last_update_dt, local_last_update_dt = check_update_needed()
 
     if need_update:
         print "Downloading zipped data from: ", data_url
@@ -85,13 +87,14 @@ def fetch_cta_data():
     else:
         print "Local zip file up to date."
 
-    if not os.path.isdir(zip_path.split('.')[0]) and os.path.exists(zip_path):
+    unzip_dir = zip_path.split('.')[0]
+    if (not os.path.isdir(unzip_dir) or datetime.datetime.fromtimestamp(os.stat(unzip_dir).st_mtime) < local_last_update_dt) \
+            and os.path.exists(zip_path):
         print "Unzipping from: ", zip_path
         unzip(zip_path)
         print "Unzip complete"
 
     return {'local_last_update_dt': local_last_update_dt, 'cta_last_update_dt': cta_last_update_dt}
-
 
 
 if __name__ == '__main__':
