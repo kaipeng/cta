@@ -32,10 +32,10 @@ class DataManager():
         self.stop_times_window_end_datetime = None
         self.stop_times_window_start_datetime = None
         self.arrival_columns = ['stop_id', 'trip_id', 'route_id',
-                                'direction', 'direction_id', 'service_id',
+                                'direction', 'service_id',
                                 'arrival_time', 'dist', 'stop_lat', 'stop_lon',
                                 'stop_sequence', 'stop_headsign', 'stop_name', 'stop_desc',
-                                'wheelchair_accessible']
+                                'wheelchair_boarding', 'shape_id']
                                 # 'shape_dist_travelled', 'schd_trip_id', 'block_id']
         print "Initializing Data Manager"
         self.parse_data_into_memory()

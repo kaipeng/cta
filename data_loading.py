@@ -4,7 +4,11 @@ import pandas as pd
 import datetime
 
 
-DATETIME_COLUMNS = ['arrival_time', 'departure_time']
+DATETIME_COLUMNS = ['arrival_time']
+STOP_TIMES_COLUMNS_DROP = ['departure_time', 'pickup_type', 'shape_dist_traveled']
+TRIPS_COLUMNS_DROP = ['schd_trip_id', 'block_id', 'direction_id', 'wheelchair_accessible']
+STOPS_COLUMNS_DROP = ['location_type', 'stop_code']
+
 
 
 def load_data(data_to_load):
@@ -37,20 +41,28 @@ def convert_time_string(datetime_string):
 
 def load_stops():
     stops_all = pd.DataFrame.from_csv('google_transit/stops.txt')
-    return stops_all.dropna(how='all', subset=['stop_code', 'parent_station'])
+    stops_all = stops_all.dropna(how='all', subset=['stop_code', 'parent_station'])
+    for drop in STOPS_COLUMNS_DROP:
+        del stops_all[drop]
+    return stops_all
 
 def load_stop_times():
     stop_times = load_data('stop_times')
     for datetime_column in DATETIME_COLUMNS:
         stop_times[datetime_column + '_24'] = [(str(int(time[0:2])+24) + time[2:])
                                                for time in stop_times[datetime_column]]
+    for drop in STOP_TIMES_COLUMNS_DROP:
+        del stop_times[drop]
     return stop_times
 
 def load_stop_times_date(stop_times, trips):
     return stop_times[stop_times.index.isin(trips.trip_id)]
 
 def load_trips():
-    return load_data('trips')
+    trips = load_data('trips')
+    for drop in TRIPS_COLUMNS_DROP:
+        del trips[drop]
+    return trips
 
 def load_trips_date(trips, calendar):
     return trips[trips.service_id.isin(calendar.index.values)]
