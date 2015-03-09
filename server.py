@@ -11,10 +11,12 @@ from fetch_cta_data import fetch_cta_data, check_update_needed
 from get_nearest_stop import get_nearest_stop
 
 import datetime
+from dateutil import tz
 import threading
 import pandas as pd
 
 NUMBER = r'-?[0-9]+\.*[0-9]*'
+CENTRAL_TZ = tz.gettz('America/Chicago')
 
 define("port", default=8888, help="run on the given port", type=int)
 
@@ -91,7 +93,7 @@ class DataManager():
 
     def get_stop_times(self, stops, start_datetime=None, window_in_hours=1):
         if not start_datetime:
-            start_datetime = datetime.datetime.now()
+            start_datetime = datetime.datetime.now(CENTRAL_TZ)
 
         if (start_datetime + datetime.timedelta(hours=window_in_hours) > self.stop_times_window_end_datetime) or \
                 (start_datetime < self.stop_times_window_start_datetime):
@@ -220,7 +222,7 @@ def update_stop_times_window():
     try:
         print "Updating Stop Times Window"
         global data_manager
-        start_dt = datetime.datetime.now()
+        start_dt = datetime.datetime.now(CENTRAL_TZ)
         data_manager.stop_times_window = data_manager.load_stop_times_in_window(start_dt, 3)
         data_manager.stop_times_window_start_datetime = start_dt
         data_manager.stop_times_window_end_datetime = start_dt + datetime.timedelta(hours=3)
