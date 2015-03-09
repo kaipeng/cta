@@ -181,7 +181,7 @@ class NearbyArrivalsHandler(tornado.web.RequestHandler):
         start_datetime_arg = self.get_argument('start', default=None)
 
         try:
-            start_datetime = pd.to_datetime(start_datetime_arg)
+            start_datetime = pd.to_datetime(start_datetime_arg).tz_localize(CENTRAL_TZ)
         except:
             start_datetime = None
 
