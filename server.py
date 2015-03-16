@@ -15,10 +15,12 @@ from dateutil import tz
 import threading
 import pandas as pd
 
+from cta_api import BusAPIHandler, TrainAPIHandler
+
 NUMBER = r'-?[0-9]+\.*[0-9]*'
 CENTRAL_TZ = tz.gettz('America/Chicago')
 
-define("port", default=8888, help="run on the given port", type=int)
+define("port", default=9999, help="run on the given port", type=int)
 
 
 class DataManager():
@@ -243,7 +245,8 @@ application = tornado.web.Application([
     (r'/', DefaultHandler),
     (r'/stops?', NearbyStopsHandler),
     (r'/arrivals?', NearbyArrivalsHandler),
-
+    (r'/bus/([^/]*)?', BusAPIHandler),
+    (r'/train/([^/]*)?', TrainAPIHandler),
     ((r'/stops/(%s)/(%s)' % (NUMBER, NUMBER)), NearestStopHandler),
 ], **settings)
 
